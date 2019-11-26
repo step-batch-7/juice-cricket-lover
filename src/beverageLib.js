@@ -1,20 +1,72 @@
-const getDate = function() {
-  return new Date();
+const fs = require("fs");
+
+const readExistingTransactions = function(filePath) {
+  if (!fs.existsSync(filePath)) {
+    return {};
+  }
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
 };
 
-const getString = function(list) {
-  return list.join("\n");
+const updateTransactions = function(filePath, updatedTransactions) {
+  fs.writeFileSync(filePath, updatedTransactions, "utf8");
 };
 
-const getArgsForSave = function(args) {
+const getNewTransaction = function(userArgs, date) {
+  const details = userArgs["transactionDetails"];
+  const EmployeeID = details["--empId"];
+  const newTransaction = {
+    EmployeeID: details["--empId"],
+    Beverage: details["--beverage"],
+    Quantity: details["--qty"],
+    Date: date
+  };
+  return newTransaction;
+};
+
+const addPresentTransaction = function(
+  EmployeeID,
+  empIds,
+  record,
+  newTransaction
+) {
+  if (empIds.includes(EmployeeID)) {
+    record[EmployeeID].push(newTransaction);
+    return record;
+  }
+  record[EmployeeID] = [newTransaction];
+  return record;
+};
+
+const getSaveMessage = function(newTransaction) {
+  const message =
+    "Transaction Recorded:" +
+    "\n" +
+    Object.keys(newTransaction) +
+    "\n" +
+    Object.values(newTransaction);
+  return message;
+};
+
+const addTransactionDetails = function(userArgs, filePath, record, date) {
+  let newTransaction = getNewTransaction(userArgs, date);
+  const empIds = Object.keys(record);
+  const EmployeeID = userArgs["transactionDetails"]["--empId"];
+  record = addPresentTransaction(EmployeeID, empIds, record, newTransaction);
+
+  const updatedTransactions = JSON.stringify(record);
+  updateTransactions(filePath, updatedTransactions);
+  let message = getSaveMessage(newTransaction);
+  return message;
+};
+
+const getArgsForSave = function(args, date) {
   let userArgs = {};
-  const date = JSON.stringify(getDate());
   userArgs = {
     operation: args[0],
     transactionDetails: {
       "--beverage": args[2],
-      "--empId": +args[4],
-      "--qty": +args[6],
+      "--empId": args[4],
+      "--qty": args[6],
       date: date
     }
   };
@@ -25,13 +77,13 @@ const getArgsForQuery = function(args) {
   userArgs = {
     operation: args[0],
     transactionDetails: {
-      "--empId": +args[2]
+      "--empId": args[2]
     }
   };
   return userArgs;
 };
 
-const readArguments = function(totalArgs) {
+const readArguments = function(totalArgs, date) {
   const args = totalArgs.slice(2);
   let operation = args[0];
   let listOfOperations = {
@@ -39,50 +91,60 @@ const readArguments = function(totalArgs) {
     "--query": getArgsForQuery
   };
 
-  let userArgs = listOfOperations[operation](args);
+  let userArgs = listOfOperations[operation](args, date);
   return userArgs;
 };
-
-const saveTransactionDetails = function(presentTransactionDetails) {
-  let result = [];
-  let details = presentTransactionDetails["transactionDetails"];
-  let transactionDetails = [
-    details["--empId"],
-    details["--beverage"],
-    details["--qty"],
-    details["date"]
-  ];
-  result.push(
-    "transaction recorded:",
-    ["Employee ID", "Beverage", "Quantity", "Date"],
-    transactionDetails
-  );
-  return result;
+const getTotalBeverages = function(sum, transactions) {
+  return sum + parseInt(transactions["Quantity"]);
 };
 
-const getTransactionDetailsOfPerson = function(args) {
-  let result = [];
-  let details = args["transactionDetails"];
-  let transactionDetails = [details["--empId"]];
-
-  result.push(
-    ["Employee ID", "Beverage", "Quantity", "Date"],
-
-    transactionDetails
-  );
-  return result;
+const getTransactionsOfEmpId = function(transactionDetails) {
+  return Object.values(transactionDetails);
 };
 
-const processArgs = function(args) {
+const getQueryMessage = function(headings, fields, totalBeverages) {
+  const message =
+    headings +
+    "\n" +
+    fields.join("\n") +
+    "\n" +
+    "Total: " +
+    totalBeverages +
+    " Juices";
+  return message;
+};
+
+const getTransactionDetailsOfPerson = function(args, filePath, record) {
+  const details = args["transactionDetails"];
+  const EmployeeID = +details["--empId"];
+  const empData = record[EmployeeID];
+
+  const totalBeverages = empData.reduce(getTotalBeverages, 0);
+  const headings = Object.keys(empData[0]);
+  const fields = empData.map(getTransactionsOfEmpId);
+
+  const message = getQueryMessage(headings, fields, totalBeverages);
+  return message;
+};
+
+const processArgs = function(args, filePath, previousDetails, date) {
   const operation = args["operation"];
   const listOfOperations = {
-    "--save": saveTransactionDetails,
+    "--save": addTransactionDetails,
     "--query": getTransactionDetailsOfPerson
   };
-  let result = listOfOperations[operation](args);
+  let result = listOfOperations[operation](
+    args,
+    filePath,
+    previousDetails,
+    date
+  );
   return result;
 };
 
 exports.readArguments = readArguments;
 exports.processArgs = processArgs;
-exports.getString = getString;
+exports.readExistingTransactions = readExistingTransactions;
+exports.getNewTransaction = getNewTransaction;
+exports.addPresentTransaction = addPresentTransaction;
+exports.getSaveMessage = getSaveMessage;
