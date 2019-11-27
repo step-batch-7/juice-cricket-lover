@@ -1,6 +1,6 @@
 const fs = require("fs");
-const addTransactionDetails = require("./saveUtilities.js")
-  .addTransactionDetails;
+const updateAndGetTransactionDetails = require("./saveUtilities.js")
+  .updateAndGetTransactionDetails;
 const getArgsForSave = require("./saveUtilities.js").getArgsForSave;
 const getTransactionDetailsOfPerson = require("./queryUtilities.js")
   .getTransactionDetailsOfPerson;
@@ -28,7 +28,7 @@ const readArguments = function(totalArgs, date) {
 const processArgs = function(args, filePath, previousDetails, date) {
   const operation = args["operation"];
   const listOfOperations = {
-    "--save": addTransactionDetails,
+    "--save": updateAndGetTransactionDetails,
     "--query": getTransactionDetailsOfPerson
   };
   let result = listOfOperations[operation](

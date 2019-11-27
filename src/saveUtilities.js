@@ -54,7 +54,12 @@ const getNewTransaction = function(userArgs, date) {
   return newTransaction;
 };
 
-const addTransactionDetails = function(userArgs, filePath, record, date) {
+const updateAndGetTransactionDetails = function(
+  userArgs,
+  filePath,
+  record,
+  date
+) {
   let newTransaction = getNewTransaction(userArgs, date);
   const empIds = Object.keys(record);
   const EmployeeID = userArgs["transactionDetails"]["--empId"];
@@ -67,7 +72,7 @@ const addTransactionDetails = function(userArgs, filePath, record, date) {
 };
 
 exports.getArgsForSave = getArgsForSave;
-exports.addTransactionDetails = addTransactionDetails;
+exports.updateAndGetTransactionDetails = updateAndGetTransactionDetails;
 exports.getNewTransaction = getNewTransaction;
 exports.addPresentTransaction = addPresentTransaction;
 exports.getSaveMessage = getSaveMessage;

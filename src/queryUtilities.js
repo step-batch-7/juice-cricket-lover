@@ -43,3 +43,4 @@ const getTransactionDetailsOfPerson = function(args, filePath, record) {
 
 exports.getArgsForQuery = getArgsForQuery;
 exports.getTransactionDetailsOfPerson = getTransactionDetailsOfPerson;
+exports.getQueryMessage = getQueryMessage;
