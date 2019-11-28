@@ -1,55 +1,36 @@
 const fs = require("fs");
 
-const updateTransactions = function(filePath, updatedTransactions) {
-  fs.writeFileSync(filePath, updatedTransactions, "utf8");
-};
-
-const getArgsForSave = function(args, date) {
-  let userArgs = {};
-  userArgs = {
-    operation: args[0],
-    transactionDetails: {
-      "--beverage": args[2],
-      "--empId": args[4],
-      "--qty": args[6],
-      date: date
-    }
-  };
-  return userArgs;
+const updateTransactions = function(filePath, updatedTransactions, fileWriter) {
+  fileWriter(filePath, updatedTransactions, "utf8");
 };
 
 const getSaveMessage = function(newTransaction) {
   const message =
     "Transaction Recorded:" +
     "\n" +
-    Object.keys(newTransaction) +
+    "Employee ID,Beverage,Quantity,Date" +
     "\n" +
     Object.values(newTransaction);
   return message;
 };
 
-const addPresentTransaction = function(
-  EmployeeID,
-  empIds,
-  record,
-  newTransaction
-) {
-  if (empIds.includes(EmployeeID)) {
-    record[EmployeeID].push(newTransaction);
+const addPresentTransaction = function(empId, empIds, record, newTransaction) {
+  if (empIds.includes(empId)) {
+    record[empId].push(newTransaction);
     return record;
   }
-  record[EmployeeID] = [newTransaction];
+  record[empId] = [newTransaction];
   return record;
 };
 
-const getNewTransaction = function(userArgs, date) {
+const getNewTransaction = function(userArgs) {
   const details = userArgs["transactionDetails"];
-  const EmployeeID = details["--empId"];
+  const empId = details["--empId"];
   const newTransaction = {
-    EmployeeID: details["--empId"],
-    Beverage: details["--beverage"],
-    Quantity: details["--qty"],
-    Date: date
+    empId: details["--empId"],
+    beverage: details["--beverage"],
+    qty: details["--qty"],
+    date: details["date"]
   };
   return newTransaction;
 };
@@ -58,20 +39,19 @@ const updateAndGetTransactionDetails = function(
   userArgs,
   filePath,
   record,
-  date
+  fileWriter
 ) {
-  let newTransaction = getNewTransaction(userArgs, date);
+  let newTransaction = getNewTransaction(userArgs);
   const empIds = Object.keys(record);
-  const EmployeeID = userArgs["transactionDetails"]["--empId"];
-  record = addPresentTransaction(EmployeeID, empIds, record, newTransaction);
+  const empId = userArgs["transactionDetails"]["--empId"];
+  record = addPresentTransaction(empId, empIds, record, newTransaction);
 
   const updatedTransactions = JSON.stringify(record);
-  updateTransactions(filePath, updatedTransactions);
+  updateTransactions(filePath, updatedTransactions, fileWriter);
   let message = getSaveMessage(newTransaction);
   return message;
 };
 
-exports.getArgsForSave = getArgsForSave;
 exports.updateAndGetTransactionDetails = updateAndGetTransactionDetails;
 exports.getNewTransaction = getNewTransaction;
 exports.addPresentTransaction = addPresentTransaction;
