@@ -1,11 +1,9 @@
-const updateAndGetTransactionDetails = require("./saveUtilities.js")
-  .updateAndGetTransactionDetails;
-const getTransactionDetailsOfPerson = require("./queryUtilities.js")
-  .getTransactionDetailsOfPerson;
-
-const readExistingTransactions = function(fileExists, fileReader, filePath) {
+const readExistingTransactions = function(fileAccessFuncs) {
+  const fileExists = fileAccessFuncs.isExist;
+  const fileReader = fileAccessFuncs.readFile;
+  const filePath = fileAccessFuncs.path;
   if (!fileExists(filePath)) {
-    return {};
+    return [];
   }
   return JSON.parse(fileReader(filePath, "utf8"));
 };
@@ -28,7 +26,9 @@ const getArgsForQuery = function(args) {
   userArgs = {
     operation: args[0],
     transactionDetails: {
-      "--empId": args[2]
+      "--empId": args[2],
+      date: args[4],
+      "--beverage": args[6]
     }
   };
   return userArgs;

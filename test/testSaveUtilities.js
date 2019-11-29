@@ -1,11 +1,12 @@
 const chai = require("chai");
 const assert = chai.assert;
-const getNewTransaction = require("../src/saveUtilities.js").getNewTransaction;
-const addPresentTransaction = require("../src/saveUtilities.js")
-  .addPresentTransaction;
-const getSaveMessage = require("../src/saveUtilities.js").getSaveMessage;
-const updateAndGetTransactionDetails = require("../src/saveUtilities.js")
-  .updateAndGetTransactionDetails;
+const saveUtilities = require("../src/saveUtilities");
+const {
+  getNewTransaction,
+  addPresentTransaction,
+  getSaveMessage,
+  updateAndGetTransactionDetails
+} = saveUtilities;
 
 describe("getNewTransaction", function() {
   it("should give present transaction details for the given arguments ", function() {
@@ -33,82 +34,72 @@ describe("addPresentTransaction", function() {
   it("should add new transaction to previous details when empId is already included", function() {
     let date = new Date("2019-11-26T07:30:23.453Z").toJSON();
     const empId = "11111";
-    const record = {
-      "11111": [
-        {
-          empId: "11111",
-          beverage: "orange",
-          qty: "1",
-          date: date
-        }
-      ]
-    };
+    const record = [
+      {
+        empId: "11111",
+        beverage: "orange",
+        qty: "1",
+        date: date
+      }
+    ];
     const newTransaction = {
       empId: "11111",
       beverage: "apple",
       qty: "2",
       date: date
     };
-    const expectedResult = {
-      "11111": [
-        {
-          empId: "11111",
-          beverage: "orange",
-          qty: "1",
-          date: date
-        },
-        {
-          empId: "11111",
-          beverage: "apple",
-          qty: "2",
-          date: date
-        }
-      ]
-    };
+    const expectedResult = [
+      {
+        empId: "11111",
+        beverage: "orange",
+        qty: "1",
+        date: date
+      },
+      {
+        empId: "11111",
+        beverage: "apple",
+        qty: "2",
+        date: date
+      }
+    ];
     assert.deepStrictEqual(
-      addPresentTransaction(empId, ["11111", "22222"], record, newTransaction),
+      addPresentTransaction(record, newTransaction),
       expectedResult
     );
   });
   it("should add new transaction to previous details when empId is not included", function() {
     let date = new Date("2019-11-26T07:30:23.453Z").toJSON();
     const empId = "33333";
-    const record = {
-      "11111": [
-        {
-          empId: "11111",
-          beverage: "orange",
-          qty: "1",
-          date: date
-        }
-      ]
-    };
+    const record = [
+      {
+        empId: "11111",
+        beverage: "orange",
+        qty: "1",
+        date: date
+      }
+    ];
     const newTransaction = {
       empId: "33333",
       beverage: "apple",
       qty: "2",
       date: date
     };
-    const expectedResult = {
-      "11111": [
-        {
-          empId: "11111",
-          beverage: "orange",
-          qty: "1",
-          date: date
-        }
-      ],
-      "33333": [
-        {
-          empId: "33333",
-          beverage: "apple",
-          qty: "2",
-          date: date
-        }
-      ]
-    };
+    const expectedResult = [
+      {
+        empId: "11111",
+        beverage: "orange",
+        qty: "1",
+        date: date
+      },
+      {
+        empId: "33333",
+        beverage: "apple",
+        qty: "2",
+        date: date
+      }
+    ];
     assert.deepStrictEqual(
-      addPresentTransaction(empId, ["11111"], record, newTransaction),
+      addPresentTransaction(record, newTransaction),
       expectedResult
     );
   });
@@ -116,7 +107,7 @@ describe("addPresentTransaction", function() {
 
 describe("getSaveMessage", function() {
   it("should give save message to be displayed", function() {
-    let date = new Date("2019-11-26T07:30:23.453Z").toJSON();
+    let date = new Date("2019-11-26T07:30:23.453Z");
     const args = {
       empId: "33333",
       beverage: "apple",
@@ -135,7 +126,7 @@ describe("updateAndGetTransactionDetails", function() {
     const fileWriter = function() {
       return;
     };
-    let date = new Date("2019-11-26T07:30:23.453Z").toJSON();
+    let date = new Date("2019-11-26T07:30:23.453Z");
     const userArgs = {
       operation: "--save",
       transactionDetails: {
@@ -145,16 +136,14 @@ describe("updateAndGetTransactionDetails", function() {
         date: date
       }
     };
-    const record = {
-      "11111": [
-        {
-          empId: "11111",
-          beverage: "orange",
-          qty: "1",
-          date: date
-        }
-      ]
-    };
+    const record = [
+      {
+        empId: "11111",
+        beverage: "orange",
+        qty: "1",
+        date: date
+      }
+    ];
     const message = `Transaction Recorded:
 Employee ID,Beverage,Quantity,Date
 11111,orange,1,2019-11-26T07:30:23.453Z`;

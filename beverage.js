@@ -1,18 +1,21 @@
-const readArguments = require("./src/readArgs.js").readArguments;
-const processArgs = require("./src/processArgs.js").processArgs;
 const fs = require("fs");
-const readExistingTransactions = require("./src/readArgs.js")
-  .readExistingTransactions;
+const readArgs = require("./src/readArgs");
+const { readArguments, readExistingTransactions } = readArgs;
+const processArgs = require("./src/processArgs.js").processArgs;
 
 const main = function() {
   const date = function() {
-    return new Date().toJSON();
+    return new Date();
   };
   const filePath = "./assets/transactions.json";
+  const argsListForReadExistingTransactions = {
+    isExist: fs.existsSync,
+    readFile: fs.readFileSync,
+    path: filePath
+  };
+
   const existingTransactions = readExistingTransactions(
-    fs.existsSync,
-    fs.readFileSync,
-    filePath
+    argsListForReadExistingTransactions
   );
   const userArgs = readArguments(process.argv, date);
   const result = processArgs(

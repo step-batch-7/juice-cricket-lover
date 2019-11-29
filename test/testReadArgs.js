@@ -32,7 +32,24 @@ describe("readArguments", function() {
     const expectedUserArgs = {
       operation: "--query",
       transactionDetails: {
-        "--empId": "22222"
+        "--empId": "22222",
+        date: undefined,
+        "--beverage": undefined
+      }
+    };
+    assert.deepStrictEqual(readArguments(args), expectedUserArgs);
+  });
+
+  it("should give the query operation with transaction details when asked for query", function() {
+    const args = "node beverage.js --query --empId 22222 --date 29-12-2019 --beverage orange".split(
+      " "
+    );
+    const expectedUserArgs = {
+      operation: "--query",
+      transactionDetails: {
+        "--empId": "22222",
+        date: "29-12-2019",
+        "--beverage": "orange"
       }
     };
     assert.deepStrictEqual(readArguments(args), expectedUserArgs);
@@ -64,7 +81,9 @@ describe("getArgsForQuery", function() {
     const expectedResult = {
       operation: "--query",
       transactionDetails: {
-        "--empId": "22222"
+        "--empId": "22222",
+        date: undefined,
+        "--beverage": undefined
       }
     };
     assert.deepStrictEqual(getArgsForQuery(args), expectedResult);
@@ -73,34 +92,45 @@ describe("getArgsForQuery", function() {
 
 describe("readExistingTransactions", function() {
   it("should read the existing transactions in the given file path", function() {
-    const fileExists = function(fileData) {
+    const filePath = "";
+    const fileExists = function(filePath) {
       return true;
-    };
-    const fileReader = function(fileData) {
-      return fileData;
     };
     const fileData = JSON.stringify({
       11111: [{ beverage: "orange", empId: 11111, qty: 2 }]
     });
+    const fileReader = function(filePath) {
+      return fileData;
+    };
+
     const expectedResult = {
       11111: [{ beverage: "orange", empId: 11111, qty: 2 }]
     };
     assert.deepStrictEqual(
-      readExistingTransactions(fileExists, fileReader, fileData),
+      readExistingTransactions({
+        isExist: fileExists,
+        readFile: fileReader,
+        path: filePath
+      }),
       expectedResult
     );
   });
   it("should give an empty object when there are no existing transactions in the given file path", function() {
-    const fileExists = function(fileData) {
+    const filePath = "";
+    const fileExists = function(filePath) {
       return false;
     };
-    const fileReader = function(fileData) {
+    const fileData = [];
+    const fileReader = function(filePath) {
       return fileData;
     };
-    const fileData = {};
-    const expectedResult = {};
+    const expectedResult = [];
     assert.deepStrictEqual(
-      readExistingTransactions(fileExists, fileReader, fileData),
+      readExistingTransactions({
+        isExist: fileExists,
+        readFile: fileReader,
+        path: filePath
+      }),
       expectedResult
     );
   });

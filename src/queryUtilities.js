@@ -1,8 +1,20 @@
-const getTotalBeverages = function(sum, transactions) {
-  return sum + parseInt(transactions["qty"]);
+const getTransactionsOfEmployeeId = function(employeeId) {
+  return function(transactions) {
+    return transactions.empId == employeeId;
+  };
 };
 
-const getTransactionsOfEmpId = function(transactionDetails) {
+const getTransactionsOnBeverage = function(beverage) {
+  return function(transactions) {
+    return transactions.beverage == beverage;
+  };
+};
+
+const getTotalBeverages = function(sum, transactions) {
+  return sum + +transactions["qty"];
+};
+
+const getFieldsOfTransactions = function(transactionDetails) {
   return Object.values(transactionDetails);
 };
 
@@ -16,11 +28,16 @@ const getQueryMessage = function(fields, totalBeverages) {
 const getTransactionDetailsOfPerson = function(args, filePath, record) {
   const details = args["transactionDetails"];
   const empId = +details["--empId"];
-  const empData = record[empId];
+  const beverage = details["--beverage"];
+  const transactionsOfEmpId = record.filter(getTransactionsOfEmployeeId(empId));
+  const transactionsOnBeverage = record.filter(
+    getTransactionsOnBeverage(beverage)
+  );
 
-  const totalBeverages = empData.reduce(getTotalBeverages, 0);
-  const headings = Object.keys(empData[0]);
-  const fields = empData.map(getTransactionsOfEmpId);
+  const totalBeverages = transactionsOfEmpId.reduce(getTotalBeverages, 0);
+  const fields = transactionsOfEmpId.map(getFieldsOfTransactions);
+  //const totalBeverages = transactionsOnBeverage.reduce(getTotalBeverages, 0);
+  //const fields = transactionsOnBeverage.map(getFieldsOfTransactions);
 
   const message = getQueryMessage(fields, totalBeverages);
   return message;

@@ -27,16 +27,14 @@ describe("getTransactionDetailsOfAPerson", function() {
         "--empId": "11111"
       }
     };
-    const record = {
-      "11111": [
-        {
-          empId: "11111",
-          beverage: "orange",
-          qty: "1",
-          Date: date
-        }
-      ]
-    };
+    const record = [
+      {
+        empId: "11111",
+        beverage: "orange",
+        qty: "1",
+        Date: date
+      }
+    ];
     const filePath = "./assets/transactions.json";
     const expectedResult = `Employee ID,Beverage,Quantity,Date
 11111,orange,1,2019-11-26T07:30:23.453Z

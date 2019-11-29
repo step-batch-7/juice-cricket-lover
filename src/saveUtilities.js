@@ -1,25 +1,20 @@
-const fs = require("fs");
-
 const updateTransactions = function(filePath, updatedTransactions, fileWriter) {
   fileWriter(filePath, updatedTransactions, "utf8");
 };
 
 const getSaveMessage = function(newTransaction) {
-  const message =
-    "Transaction Recorded:" +
-    "\n" +
-    "Employee ID,Beverage,Quantity,Date" +
-    "\n" +
-    Object.values(newTransaction);
+  const rows = [
+    newTransaction.empId,
+    newTransaction.beverage,
+    newTransaction.qty,
+    newTransaction.date.toJSON()
+  ];
+  const message = `Transaction Recorded:\nEmployee ID,Beverage,Quantity,Date\n${rows}`;
   return message;
 };
 
-const addPresentTransaction = function(empId, empIds, record, newTransaction) {
-  if (empIds.includes(empId)) {
-    record[empId].push(newTransaction);
-    return record;
-  }
-  record[empId] = [newTransaction];
+const addPresentTransaction = function(record, newTransaction) {
+  record.push(newTransaction);
   return record;
 };
 
@@ -42,9 +37,7 @@ const updateAndGetTransactionDetails = function(
   fileWriter
 ) {
   let newTransaction = getNewTransaction(userArgs);
-  const empIds = Object.keys(record);
-  const empId = userArgs["transactionDetails"]["--empId"];
-  record = addPresentTransaction(empId, empIds, record, newTransaction);
+  record = addPresentTransaction(record, newTransaction);
 
   const updatedTransactions = JSON.stringify(record);
   updateTransactions(filePath, updatedTransactions, fileWriter);

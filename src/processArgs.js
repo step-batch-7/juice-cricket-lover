@@ -9,6 +9,7 @@ const processArgs = function(args, filePath, existingTransactions, fileWriter) {
     "--save": updateAndGetTransactionDetails,
     "--query": getTransactionDetailsOfPerson
   };
+
   let result = listOfOperations[operation](
     args,
     filePath,
