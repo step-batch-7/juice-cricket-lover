@@ -1,30 +1,19 @@
 const fs = require("fs");
-const readArgs = require("./src/readArgs");
-const { readArguments, readExistingTransactions } = readArgs;
 const processArgs = require("./src/processArgs.js").processArgs;
+const { getDataStorePath, timeStamp } = require("./src/config");
 
-const main = function() {
-  const date = function() {
-    return new Date();
-  };
-  const filePath = "./assets/transactions.json";
-  const argsListForReadExistingTransactions = {
+const main = function(userArgs) {
+  const argsListForProcessing = {
     isExist: fs.existsSync,
     readFile: fs.readFileSync,
-    path: filePath
+    fileWriter: fs.writeFileSync,
+    path: getDataStorePath(process.env),
+    date: timeStamp.bind(null, process.env),
+    userArgs: userArgs
   };
 
-  const existingTransactions = readExistingTransactions(
-    argsListForReadExistingTransactions
-  );
-  const userArgs = readArguments(process.argv, date);
-  const result = processArgs(
-    userArgs,
-    filePath,
-    existingTransactions,
-    fs.writeFileSync
-  );
-  console.log(result);
+  const message = processArgs(argsListForProcessing);
+  console.log(message);
 };
 
-main();
+main(process.argv);

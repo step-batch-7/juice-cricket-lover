@@ -1,6 +1,6 @@
-const getTransactionsOfEmployeeId = function(employeeId) {
+const getTransactionsOnEmpId = function(employeeId) {
   return function(transactions) {
-    return transactions.empId == employeeId;
+    return transactions.empId == +employeeId;
   };
 };
 
@@ -10,34 +10,57 @@ const getTransactionsOnBeverage = function(beverage) {
   };
 };
 
+const getTransactionsOnDate = function(date) {
+  return function(transaction) {
+    return transaction.date.slice(0, 10) == +date;
+  };
+};
+
 const getTotalBeverages = function(sum, transactions) {
   return sum + +transactions["qty"];
 };
 
 const getFieldsOfTransactions = function(transactionDetails) {
-  return Object.values(transactionDetails);
+  return [
+    transactionDetails.empId,
+    transactionDetails.beverage,
+    transactionDetails.qty,
+    transactionDetails.date
+  ];
 };
 
 const getQueryMessage = function(fields, totalBeverages) {
-  const totalFields = fields.join("\n");
-  const message = `Employee ID,Beverage,Quantity,Date\n${totalFields}\nTotal: ${totalBeverages} Juices`;
+  const message = [
+    `Employee ID, Beverage, Quantity, Date`,
+    ...fields,
+    `Total: ${totalBeverages} Juices`
+  ].join("\n");
 
   return message;
 };
 
 const getTransactionDetailsOfPerson = function(args, filePath, record) {
+  let filteredTransactions = record;
   const details = args["transactionDetails"];
-  const empId = +details["--empId"];
+  const empId = details["--empId"];
   const beverage = details["--beverage"];
-  const transactionsOfEmpId = record.filter(getTransactionsOfEmployeeId(empId));
-  const transactionsOnBeverage = record.filter(
-    getTransactionsOnBeverage(beverage)
-  );
+  const date = details["date"];
 
-  const totalBeverages = transactionsOfEmpId.reduce(getTotalBeverages, 0);
-  const fields = transactionsOfEmpId.map(getFieldsOfTransactions);
-  //const totalBeverages = transactionsOnBeverage.reduce(getTotalBeverages, 0);
-  //const fields = transactionsOnBeverage.map(getFieldsOfTransactions);
+  let isEmpIdDefined =
+    empId && filteredTransactions.filter(getTransactionsOnEmpId(empId));
+  filteredTransactions = isEmpIdDefined || filteredTransactions;
+
+  let isBeverageDefined =
+    beverage &&
+    filteredTransactions.filter(getTransactionsOnBeverage(beverage));
+  filteredTransactions = isBeverageDefined || filteredTransactions;
+
+  let isDateDefined =
+    date && filteredTransactions.filter(getTransactionsOnDate(date));
+  filteredTransactions = isDateDefined || filteredTransactions;
+
+  const totalBeverages = filteredTransactions.reduce(getTotalBeverages, 0);
+  const fields = filteredTransactions.map(getFieldsOfTransactions);
 
   const message = getQueryMessage(fields, totalBeverages);
   return message;

@@ -22,7 +22,7 @@ const getArgsForSave = function(args, date) {
   return userArgs;
 };
 
-const getArgsForQuery = function(args) {
+const getArgsForQuery = function(args, date) {
   userArgs = {
     operation: args[0],
     transactionDetails: {

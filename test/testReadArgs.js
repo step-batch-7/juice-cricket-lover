@@ -78,6 +78,9 @@ describe("getArgsForSave", function() {
 describe("getArgsForQuery", function() {
   it("should give the required arguments for query operation", function() {
     const args = "--query --empId 22222".split(" ");
+    const date = function() {
+      return new Date();
+    };
     const expectedResult = {
       operation: "--query",
       transactionDetails: {
@@ -86,7 +89,7 @@ describe("getArgsForQuery", function() {
         "--beverage": undefined
       }
     };
-    assert.deepStrictEqual(getArgsForQuery(args), expectedResult);
+    assert.deepStrictEqual(getArgsForQuery(args, date), expectedResult);
   });
 });
 

@@ -9,7 +9,7 @@ describe("getQueryMessage", function() {
     const date = new Date("2019-11-26T07:30:23.453Z").toJSON();
     const fields = [["22222", "orange", "2", date]];
     const totalBeverages = 4;
-    const expectedResult = `Employee ID,Beverage,Quantity,Date\n22222,orange,2,2019-11-26T07:30:23.453Z
+    const expectedResult = `Employee ID, Beverage, Quantity, Date\n22222,orange,2,2019-11-26T07:30:23.453Z
 Total: 4 Juices`;
     assert.deepStrictEqual(
       getQueryMessage(fields, totalBeverages),
@@ -19,12 +19,14 @@ Total: 4 Juices`;
 });
 
 describe("getTransactionDetailsOfAPerson", function() {
-  it("should give transaction details of requested emloyee ID", function() {
+  it("should give transaction details of requested employee ID", function() {
     let date = new Date("2019-11-26T07:30:23.453Z").toJSON();
     const userArgs = {
       operation: "--query",
       transactionDetails: {
-        "--empId": "11111"
+        "--empId": "11111",
+        date: undefined,
+        beverage: undefined
       }
     };
     const record = [
@@ -32,11 +34,38 @@ describe("getTransactionDetailsOfAPerson", function() {
         empId: "11111",
         beverage: "orange",
         qty: "1",
-        Date: date
+        date: date
       }
     ];
     const filePath = "./assets/transactions.json";
-    const expectedResult = `Employee ID,Beverage,Quantity,Date
+    const expectedResult = `Employee ID, Beverage, Quantity, Date
+11111,orange,1,2019-11-26T07:30:23.453Z
+Total: 1 Juices`;
+    assert.deepStrictEqual(
+      getTransactionDetailsOfAPerson(userArgs, filePath, record),
+      expectedResult
+    );
+  });
+  it("should give transaction details of requested employee ID", function() {
+    let date = new Date("2019-11-26T07:30:23.453Z").toJSON();
+    const userArgs = {
+      operation: "--query",
+      transactionDetails: {
+        "--empId": "11111",
+        date: undefined,
+        beverage: undefined
+      }
+    };
+    const record = [
+      {
+        empId: "11111",
+        beverage: "orange",
+        qty: "1",
+        date: date
+      }
+    ];
+    const filePath = "./assets/transactions.json";
+    const expectedResult = `Employee ID, Beverage, Quantity, Date
 11111,orange,1,2019-11-26T07:30:23.453Z
 Total: 1 Juices`;
     assert.deepStrictEqual(
