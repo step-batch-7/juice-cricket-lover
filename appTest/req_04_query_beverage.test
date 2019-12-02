@@ -1,4 +1,0 @@
-(export NOW="2019-11-28T12:00:00.000Z";export JUICE_TRANSACTIONS_STORE_PATH="./appTest/preset_2_orange_juices_transactionData.json";node beverage.js --query --beverage Watermelon)
-Employee ID, Beverage, Quantity, Date
-11111,Watermelon,1,2019-11-20T05:50:28.267Z
-Total: 1 Juices
