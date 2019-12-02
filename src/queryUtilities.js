@@ -12,7 +12,7 @@ const getTransactionsOnBeverage = function(beverage) {
 
 const getTransactionsOnDate = function(date) {
   return function(transaction) {
-    return transaction.date.slice(0, 10) == +date;
+    return transaction.date.slice(0, 10) == date;
   };
 };
 
@@ -44,7 +44,7 @@ const getTransactionDetailsOfPerson = function(args, filePath, record) {
   const details = args["transactionDetails"];
   const empId = details["--empId"];
   const beverage = details["--beverage"];
-  const date = details["date"];
+  const date = details["--date"];
 
   let isEmpIdDefined =
     empId && filteredTransactions.filter(getTransactionsOnEmpId(empId));

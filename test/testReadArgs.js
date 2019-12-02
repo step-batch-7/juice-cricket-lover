@@ -6,6 +6,7 @@ const readExistingTransactions = require("../src/readArgs.js")
   .readExistingTransactions;
 const getArgsForSave = require("../src/readArgs.js").getArgsForSave;
 const getArgsForQuery = require("../src/readArgs.js").getArgsForQuery;
+const getPairedArgs = require("../src/readArgs").getPairedArgs;
 
 describe("readArguments", function() {
   it("should give the save operation with transaction details when asked for save", function() {
@@ -32,9 +33,7 @@ describe("readArguments", function() {
     const expectedUserArgs = {
       operation: "--query",
       transactionDetails: {
-        "--empId": "22222",
-        date: undefined,
-        "--beverage": undefined
+        "--empId": "22222"
       }
     };
     assert.deepStrictEqual(readArguments(args), expectedUserArgs);
@@ -48,7 +47,7 @@ describe("readArguments", function() {
       operation: "--query",
       transactionDetails: {
         "--empId": "22222",
-        date: "29-12-2019",
+        "--date": "29-12-2019",
         "--beverage": "orange"
       }
     };
@@ -57,7 +56,7 @@ describe("readArguments", function() {
 });
 
 describe("getArgsForSave", function() {
-  it("should get the required arguments for save operation", function() {
+  it("should give the required arguments for save operation with given parameters", function() {
     const args = "--save --beverage orange --empId 11111 --qty 1".split(" ");
     let date = function() {
       return new Date("2019-11-26T07:30:23.453Z");
@@ -84,9 +83,7 @@ describe("getArgsForQuery", function() {
     const expectedResult = {
       operation: "--query",
       transactionDetails: {
-        "--empId": "22222",
-        date: undefined,
-        "--beverage": undefined
+        "--empId": "22222"
       }
     };
     assert.deepStrictEqual(getArgsForQuery(args, date), expectedResult);
@@ -136,5 +133,22 @@ describe("readExistingTransactions", function() {
       }),
       expectedResult
     );
+  });
+});
+
+describe("getPairedArgs", function() {
+  it("should pair up every two elements and give the paired elements", function() {
+    const args = "--empId,11111,--beverage,orange,--date,25-12-2019".split(",");
+    const expectedResult = {
+      "--empId": "11111",
+      "--beverage": "orange",
+      "--date": "25-12-2019"
+    };
+    assert.deepStrictEqual(getPairedArgs(args), expectedResult);
+  });
+  it("should give an empty object for an empty array", function() {
+    const args = [];
+    const expectedResult = {};
+    assert.deepStrictEqual(getPairedArgs(args), expectedResult);
   });
 });

@@ -8,6 +8,16 @@ const readExistingTransactions = function(fileAccessFuncs) {
   return JSON.parse(fileReader(filePath, "utf8"));
 };
 
+const getPairedArgs = function(args) {
+  if (args.length == 0) {
+    return {};
+  }
+  let pairs = {};
+  pairs[args[0]] = args[1];
+
+  return Object.assign(pairs, getPairedArgs(args.slice(2)));
+};
+
 const getArgsForSave = function(args, date) {
   let userArgs = {};
   userArgs = {
@@ -25,11 +35,7 @@ const getArgsForSave = function(args, date) {
 const getArgsForQuery = function(args, date) {
   userArgs = {
     operation: args[0],
-    transactionDetails: {
-      "--empId": args[2],
-      date: args[4],
-      "--beverage": args[6]
-    }
+    transactionDetails: getPairedArgs(args.slice(1))
   };
   return userArgs;
 };
@@ -50,3 +56,4 @@ exports.getArgsForSave = getArgsForSave;
 exports.getArgsForQuery = getArgsForQuery;
 exports.readArguments = readArguments;
 exports.readExistingTransactions = readExistingTransactions;
+exports.getPairedArgs = getPairedArgs;
