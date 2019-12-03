@@ -1,10 +1,6 @@
-const updateAndGetTransactionDetails = require("./saveUtilities.js")
-  .updateAndGetTransactionDetails;
-const getTransactionDetailsOfPerson = require("./queryUtilities.js")
-  .getTransactionDetailsOfPerson;
-const readExistingTransactions = require("./readArgs.js")
-  .readExistingTransactions;
-const readArguments = require("./readArgs").readArguments;
+const { updateAndGetTransactionDetails } = require("./saveUtilities.js");
+const { getTransactionDetailsOfPerson } = require("./queryUtilities.js");
+const { readExistingTransactions, readArguments } = require("./readArgs.js");
 
 const processArgs = function(processingArgs) {
   const {
@@ -15,14 +11,17 @@ const processArgs = function(processingArgs) {
     fileWriter,
     date
   } = processingArgs;
+
   const argsListForReadingExistingTransactions = {
     isExist: isExist,
     readFile: readFile,
     path: path
   };
+
   const existingTransactions = readExistingTransactions(
     argsListForReadingExistingTransactions
   );
+
   const args = readArguments(userArgs, date);
   const operation = args["operation"];
   const listOfOperations = {
@@ -30,12 +29,14 @@ const processArgs = function(processingArgs) {
     "--query": getTransactionDetailsOfPerson
   };
 
-  let result = listOfOperations[operation](
+  const operationToBePerformed = listOfOperations[operation];
+  const result = operationToBePerformed(
     args,
-    path,
     existingTransactions,
+    path,
     fileWriter
   );
+
   return result;
 };
 

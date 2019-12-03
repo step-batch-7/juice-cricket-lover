@@ -1,11 +1,9 @@
 const readExistingTransactions = function(fileAccessFuncs) {
-  const fileExists = fileAccessFuncs.isExist;
-  const fileReader = fileAccessFuncs.readFile;
-  const filePath = fileAccessFuncs.path;
-  if (!fileExists(filePath)) {
+  const { isExist, readFile, path } = fileAccessFuncs;
+  if (!isExist(path)) {
     return [];
   }
-  return JSON.parse(fileReader(filePath, "utf8"));
+  return JSON.parse(readFile(path, "utf8"));
 };
 
 const getPairedArgs = function(args) {
@@ -19,8 +17,7 @@ const getPairedArgs = function(args) {
 };
 
 const getArgsForSave = function(args, date) {
-  let userArgs = {};
-  userArgs = {
+  const userArgs = {
     operation: args[0],
     transactionDetails: {
       "--beverage": args[2],
@@ -42,18 +39,20 @@ const getArgsForQuery = function(args, date) {
 
 const readArguments = function(totalArgs, date) {
   const args = totalArgs.slice(2);
-  let operation = args[0];
-  let listOfOperations = {
+  const operation = args[0];
+  const listOfOperations = {
     "--save": getArgsForSave,
     "--query": getArgsForQuery
   };
 
-  let userArgs = listOfOperations[operation](args, date);
+  const userArgs = listOfOperations[operation](args, date);
   return userArgs;
 };
 
-exports.getArgsForSave = getArgsForSave;
-exports.getArgsForQuery = getArgsForQuery;
-exports.readArguments = readArguments;
-exports.readExistingTransactions = readExistingTransactions;
-exports.getPairedArgs = getPairedArgs;
+module.exports = {
+  getArgsForSave,
+  getArgsForQuery,
+  getPairedArgs,
+  readExistingTransactions,
+  readArguments
+};

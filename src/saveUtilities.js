@@ -32,16 +32,16 @@ const getNewTransaction = function(userArgs) {
 
 const updateAndGetTransactionDetails = function(
   userArgs,
-  filePath,
   record,
+  filePath,
   fileWriter
 ) {
-  let newTransaction = getNewTransaction(userArgs);
+  const newTransaction = getNewTransaction(userArgs);
   record = addPresentTransaction(record, newTransaction);
 
   const updatedTransactions = JSON.stringify(record);
   updateTransactions(filePath, updatedTransactions, fileWriter);
-  let message = getSaveMessage(newTransaction);
+  const message = getSaveMessage(newTransaction);
   return message;
 };
 

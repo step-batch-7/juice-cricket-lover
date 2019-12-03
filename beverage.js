@@ -2,7 +2,7 @@ const fs = require("fs");
 const processArgs = require("./src/processArgs.js").processArgs;
 const { getDataStorePath, timeStamp } = require("./src/config");
 
-const main = function(userArgs, env) {
+const beverage = function(userArgs, env) {
   const argsListForProcessing = {
     isExist: fs.existsSync,
     readFile: fs.readFileSync,
@@ -16,4 +16,4 @@ const main = function(userArgs, env) {
   console.log(message);
 };
 
-main(process.argv, process.env);
+beverage(process.argv, process.env);

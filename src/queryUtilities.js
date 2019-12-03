@@ -17,7 +17,7 @@ const getTransactionsOnDate = function(date) {
 };
 
 const getTotalBeverages = function(sum, transactions) {
-  return sum + +transactions["qty"];
+  return +transactions["qty"] + sum;
 };
 
 const getFieldsOfTransactions = function(transactionDetails) {
@@ -61,7 +61,7 @@ const filterTransactionsOnBeverage = function(filteredTransactions, beverage) {
   return filteredTransactions;
 };
 
-const getTransactionDetailsOfPerson = function(args, filePath, record) {
+const getTransactionDetailsOfPerson = function(args, record) {
   const details = args["transactionDetails"];
   const empId = details["--empId"];
   const beverage = details["--beverage"];

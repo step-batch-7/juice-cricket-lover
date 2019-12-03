@@ -93,14 +93,16 @@ describe("testReadArgs", function() {
 
   describe("readExistingTransactions", function() {
     it("should read the existing transactions in the given file path", function() {
-      const filePath = "";
+      const filePath = "somepath";
       const fileExists = function(filePath) {
+        assert.strictEqual(filePath, "somepath");
         return true;
       };
       const fileData = JSON.stringify({
         11111: [{ beverage: "orange", empId: 11111, qty: 2 }]
       });
       const fileReader = function(filePath) {
+        assert.strictEqual(filePath, "somepath");
         return fileData;
       };
 
@@ -117,12 +119,14 @@ describe("testReadArgs", function() {
       );
     });
     it("should give an empty object when there are no existing transactions in the given file path", function() {
-      const filePath = "";
+      const filePath = "somepath";
       const fileExists = function(filePath) {
+        assert.strictEqual(filePath, "somepath");
         return false;
       };
-      const fileData = [];
+      const fileData = "[]";
       const fileReader = function(filePath) {
+        assert.strictEqual(filePath, "somepath");
         return fileData;
       };
       const expectedResult = [];

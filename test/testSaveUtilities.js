@@ -124,7 +124,9 @@ Employee ID,Beverage,Quantity,Date
 
   describe("updateAndGetTransactionDetails", function() {
     it("should update and get transaction details", function() {
-      const fileWriter = function() {
+      const filePath = "somepath";
+      const fileWriter = function(filePath) {
+        assert.strictEqual(filePath, "somepath");
         return;
       };
       let date = new Date("2019-11-26T07:30:23.453Z");
@@ -148,9 +150,9 @@ Employee ID,Beverage,Quantity,Date
       const message = `Transaction Recorded:
 Employee ID,Beverage,Quantity,Date
 11111,orange,1,2019-11-26T07:30:23.453Z`;
-      const filePath = "./assets/transactions.json";
+
       assert.deepStrictEqual(
-        updateAndGetTransactionDetails(userArgs, filePath, record, fileWriter),
+        updateAndGetTransactionDetails(userArgs, record, filePath, fileWriter),
         message
       );
     });

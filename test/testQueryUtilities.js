@@ -52,7 +52,7 @@ Total: 4 Juices`;
 11111,orange,1,2019-11-26T07:30:23.453Z
 Total: 1 Juices`;
       assert.deepStrictEqual(
-        getTransactionDetailsOfPerson(userArgs, filePath, record),
+        getTransactionDetailsOfPerson(userArgs, record),
         expectedResult
       );
     });
@@ -79,7 +79,7 @@ Total: 1 Juices`;
 11111,orange,1,2019-11-26T07:30:23.453Z
 Total: 1 Juices`;
       assert.deepStrictEqual(
-        getTransactionDetailsOfPerson(userArgs, filePath, record),
+        getTransactionDetailsOfPerson(userArgs, record),
         expectedResult
       );
     });
