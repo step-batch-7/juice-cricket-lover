@@ -2,13 +2,13 @@ const fs = require("fs");
 const processArgs = require("./src/processArgs.js").processArgs;
 const { getDataStorePath, timeStamp } = require("./src/config");
 
-const main = function(userArgs) {
+const main = function(userArgs, env) {
   const argsListForProcessing = {
     isExist: fs.existsSync,
     readFile: fs.readFileSync,
     fileWriter: fs.writeFileSync,
-    path: getDataStorePath(process.env),
-    date: timeStamp.bind(null, process.env),
+    path: getDataStorePath(env),
+    date: timeStamp.bind(null, env),
     userArgs: userArgs
   };
 
@@ -16,4 +16,4 @@ const main = function(userArgs) {
   console.log(message);
 };
 
-main(process.argv);
+main(process.argv, process.env);
